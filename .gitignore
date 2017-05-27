@@ -1,5 +1,5 @@
 functions/
-.firebasesrc
+.firebaserc
 db.json
 firebase-debug.log
 firebase.json
