@@ -1,0 +1,345 @@
+var App = angular.module('clock', ['ngAnimate']);
+
+App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
+
+  $scope.currtopic = 'ba';
+  $scope.maincolor = 'F8E848';
+  $scope.metadata = {};
+$scope.questionPlaceholder = "fo";
+  var maxImagesinArr = 3;
+  var chanseForImageCreation = 20; // start from 1:20
+  $scope.posterImages = [];
+
+
+
+  var config = {
+    apiKey: "AIzaSyCc04tscd1bx3BQR21UnCtBJA6RlTHzYiY",
+    authDomain: "clock-2517a.firebaseapp.com",
+    databaseURL: "https://clock-2517a.firebaseio.com",
+    projectId: "clock-2517a",
+    storageBucket: "clock-2517a.appspot.com",
+    messagingSenderId: "562231687355"
+  };
+  firebase.initializeApp(config);
+
+
+  //get designer list from DB
+
+  var dbObjMetaRef = firebase.database().ref('metadata');
+  dbObjMetaRef.on('value', function (snapshot) {
+    $scope.metadata.designersnames = snapshot.val().designernames;
+    $scope.metadata.dailytpoic = snapshot.val().dailytpoic;
+    $scope.$apply();
+  });
+
+
+
+  // Gif backgrounds - pull all topics from DB
+  var dbObjTopicsRef = firebase.database().ref('topisobj');
+  dbObjTopicsRef.on('value', function (snapshot) {
+    if (snapshot.val()) {
+      $scope.topics = snapshot.val();
+      console.log('Topics updated!');
+      // $scope.ChangeTopic();
+
+    }
+  });
+
+  var deadline = new Date();
+  deadline.setHours(24, 18, 0, 0);
+
+
+  $scope.inputKeyPress = function (keyEvent) {
+    if (keyEvent.which === 13) {
+      $scope.ChangeTopic();
+
+    }
+  }
+
+
+
+  var tickCounter = 0;
+  var tickRandomSeed = 0;
+  var tick = $interval(function () {
+    tickCounter++;
+    tickRandomSeed = Math.floor((Math.random() * chanseForImageCreation));
+    if (tickRandomSeed == 1) { // input randomly
+      // if ( tickCounter % 10 == 1 ) { // input every 10 sec (for testing)
+
+      $scope.ChangeTopic();
+
+    }
+    $scope.remTimeCountdown = getTimeRemaining(deadline);
+
+  }, 1000);
+
+
+  // $scope.ChangeText = function () {
+  //   $scope.itterations = 0;
+  // }
+
+
+  $scope.ChangeTopic = function () {
+    var result;
+    var count = 0;
+
+    if ($scope.posterImages.length > maxImagesinArr) {
+      console.log('shift!');
+      $scope.posterImages.shift();
+      // $scope.$apply();
+    }
+
+    if ($scope.addedValue) {
+      // $scope.itterations = $scope.itterations + 1;
+      console.log('inside ChangeTopic with value');
+
+      $.ajax({
+        url: "https://api.giphy.com/v1/gifs/search?q=" + $scope.addedValue.replace(/%20/g, '+') + "&api_key=dc6zaTOxFJmzC",
+        type: "GET",
+        success: function (response) {
+
+          var numOfImagesToAdd = response.data.length;
+
+          if (numOfImagesToAdd > 0) {
+            var randomURL = response.data[Math.floor((Math.random() * response.data.length))].images.fixed_width.url;
+            $scope.currtopic = {
+              title: $scope.addedValue,
+              imgAddr: randomURL
+            };
+
+            $scope.posterImages.push({
+              title: $scope.addedValue,
+              src: randomURL,
+              topSpace: Math.floor((Math.random() * 150)),
+              posterWidth: Math.floor((Math.random() * 220) + 100),
+              date: getCurrTime(),
+              hour: $scope.metadata.dailytpoic
+            });
+            $scope.addedValue = '';
+
+
+
+
+            // responsiveVoice.speak( $scope.currtopic.title, $scope.voice.voice, {
+            //   rate:  $scope.voice.rate,
+            //   volume:  $scope.voice.volume,
+            //   pitch: $scope.voice.pitch
+            // });
+
+          } else {
+            // TODO: no images fond
+          }
+
+
+
+
+        }
+      });
+    } else {
+      console.log('inside ChangeTopic no value');
+      $scope.addedValue = '';
+      for (var prop in $scope.topics) {
+        if (Math.random() < 1 / ++count) {
+          result = prop;
+        }
+      }
+      $scope.currtopic = $scope.topics[result];
+      $scope.posterImages.push({
+        title: $scope.topics[result].title,
+        src: $scope.topics[result].imgAddr,
+        posterWidth: Math.floor((Math.random() * 220) + 100),
+        topSpace: Math.floor((Math.random() * 150)),
+        date: getCurrTime(),
+        hour: $scope.metadata.dailytpoic
+      });
+    }
+  }
+
+
+  function getTimeRemaining(endtime) {
+    var t = Date.parse(endtime) - Date.parse(new Date());
+    var seconds = Math.floor((t / 1000) % 60);
+    var minutes = Math.floor((t / 1000 / 60) % 60);
+    var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+    if(hours<10){
+    hours='0'+hours;
+} 
+if(minutes<10){
+    minutes='0'+minutes;
+} 
+if(seconds<10){
+    seconds='0'+seconds;
+} 
+    return {
+      'total': t,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+    };
+  }
+
+
+function getCurrTime() {
+  var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd;
+} 
+if(mm<10){
+    mm='0'+mm;
+} 
+return dd+'/'+mm+'/'+yyyy;
+
+}
+
+  // Starting the clock on remote trigger
+  var dbObjClockeRef = firebase.database().ref('clockstart');
+  dbObjClockeRef.on('value', function (snapshot) {
+    if (snapshot.val().start) {
+      setNow();
+      console.log('drawClock');
+      setInterval(function () {
+        $scope.drawClock();
+      }, 1000);
+      $scope.isClockOn = true;
+      $scope.$apply();
+      // Reset the trigger
+      firebase.database().ref('clockstart').set({
+        start: false
+      });
+    }
+  });
+
+  var dbObjVoiceRef = firebase.database().ref('talk');
+  dbObjVoiceRef.on('value', function (snapshot) {
+    $scope.voice = {};
+    $scope.voice.rate = snapshot.val().rate;
+    $scope.voice.voice = snapshot.val().voice;
+    $scope.voice.volume = snapshot.val().volume;
+    $scope.voice.pitch = snapshot.val().pitch;
+    if (snapshot.val().words!="")
+      $scope.questionPlaceholder = snapshot.val().words;    
+    responsiveVoice.speak(snapshot.val().words, snapshot.val().voice, {
+      rate: snapshot.val().rate,
+      volume: snapshot.val().volume,
+      pitch: snapshot.val().pitch,
+      onstart: voiceStartCallback,
+      onend: voiceEndCallback
+    });
+        
+    firebase.database().ref('talk/words').set("");
+    $scope.$apply();
+  });
+
+
+  function voiceStartCallback() {
+    $("#canvas").addClass("sound-on");
+  }
+
+  function voiceEndCallback() {
+    $("#canvas").removeClass("sound-on");
+  }
+
+
+
+
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var radius = canvas.height / 2;
+  ctx.translate(radius, radius);
+  radius = radius * 0.8;
+
+
+  $scope.drawClock = function () {
+    console.log('in DrawClock');
+    var seed = Math.floor(Math.random() * 100) + 1;
+    drawFace(ctx, radius);
+    drawNumbers(ctx, radius);
+    drawTime(ctx, radius);
+  }
+
+
+
+  function drawTime(ctx, radius) {
+    var now = new Date();
+    var hour = now.getHours() - startHour - 4;
+    var minute = now.getMinutes() - startminute;
+    var second = now.getSeconds() - startsecond;
+    //hour
+    hour = hour % 12;
+    hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
+    drawHand(ctx, hour, radius * 0.5, 4);
+    //minute
+    minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+    drawHand(ctx, minute, radius * 0.8, 4);
+    // second
+    second = (second * Math.PI / 30);
+    drawHand(ctx, second, radius * 0.9, 4);
+  }
+
+  function drawHand(ctx, pos, length, width) {
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "butt";
+    ctx.moveTo(0, 0);
+    ctx.rotate(-pos);
+    ctx.lineTo(0, -length);
+    ctx.stroke();
+    ctx.rotate(pos);
+  }
+
+  function drawNumbers(ctx, radius) {
+    var ang;
+    var num;
+    ctx.font = radius * 0.15 + "px Simpler";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    for (num = 1; num < 5; num++) {
+      ang = num * Math.PI / 6;
+      ctx.rotate(ang);
+      ctx.translate(0, -radius * 0.8);
+      ctx.rotate(-ang);
+      ctx.fillText(num.toString(), 0, 0);
+      //    ctx.fillText("A", 0, 0);
+      ctx.rotate(ang);
+      ctx.translate(0, radius * 0.8);
+      ctx.rotate(-ang);
+    }
+  }
+
+  function drawFace(ctx, radius) {
+
+
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = '#'+ $scope.maincolor;
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+
+
+    ctx.fillStyle = '#000';
+
+  }
+
+  setNow();
+
+  var now = new Date();
+  var startHour = now.getHours();
+  var startminute = now.getMinutes();
+  var startsecond = now.getSeconds();
+
+
+  function setNow() {
+    now = new Date();
+    startHour = now.getHours();
+    startminute = now.getMinutes();
+    startsecond = now.getSeconds();
+    $scope.drawClock();
+  }
+
+}]);

@@ -1,0 +1,63 @@
+<!doctype html>
+<html ng-app="clock">
+
+<head>
+      <meta charset="utf-8">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      <title>Clock input</title>
+      <meta name="description" content="food">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, user-scalable=no">
+      <link rel="shortcut icon" href="favicon.ico" />
+      <meta property="og:url" content="" />
+      <meta property="og:type" content="Clock input" />
+      <meta property="og:title" content="Clock input" />
+      <meta property="og:site_name" content="Luncher" />
+      <meta property="og:description" content="foo" />
+      <meta property="og:image" content="" />
+      <meta property="og:image:url" content="" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:type" content="image/png" />
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body id="top" ng-class="{'body--dialog-open':(selectedIndex.current != -1)}" ng-controller="index">
+
+      <input ng-model="textValue" placeholder="Speak">
+      <div class="submitbutton" ng-click="onSubmitClick()"> Submit</div>
+      <br><br>
+      <input placeholder="Add topic" id='topicinput'>
+      <div ng-click="pushTopic()">Add Topic</div>
+
+      <div class="static ng-leave" ng-repeat="item in topics">
+            <div class='' style="height:{{item.topSpace}}px"></div>
+            <div class="" style="width:{{item.posterWidth}}px;background:#{{maincolor}}">
+                  <div class="">
+                        <h2>{{item.title}}<br>{{item.date}}</h2>
+                        <button ng-click="removeTopic(item.key)">delete</button>
+
+                  </div>
+                  <img src="{{item.imgAddr}}" />
+            </div>
+      </div>
+
+
+
+
+
+      <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+      <!--Jquery-->
+      <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+      <!--Angular-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.js"></script>
+      <!--Chroma JS-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.3/chroma.min.js"></script>
+      <!--AppJS-->
+      <script src="js/appInput.js"></script>
+
+</body>
+
+</html>
