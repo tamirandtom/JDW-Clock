@@ -23,39 +23,22 @@
       <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
+
+
 <body id="top" class="overflow-hidden" ng-controller="index" style="background:{{maincolor}}" ng-class="{'isCrazy':(isCrazy)}">
-      <div class="cm-poster-container" ng-repeat="item in posterImages" ng-class="{'last-poster':($last),'zoom10':($index==0),'zoom9':($index==1),'zoom8':($index==2),'zoom7':($index==3),'zoom6':($index==4),'zoom5':($index==5),'zoom4':($index==6),'zoom3':($index==7),'zoom2':($index==8),'zoom1':($index==9)}">
+
+
+
+      <div class="cm-poster-container" ng-repeat="item in posterImages" ng-class="{'last-poster':($last),'zoom10':($index==0),'zoom9':($index==1),'zoom8':($index==2),'zoom7':($index==3),'zoom6':($index==4),'zoom5':($index==5),'zoom4':($index==6),'zoom3':($index==7),'zoom2':($index==8),'zoom1':($index==9)}" >
             <div class='cm-poster-spacer'></div>
       <div class="cm-poster" style="width:{{item.posterWidth}}px;background:{{maincolor}}"> 
             <div class="cm-poster__headline">
-            <h2>{{item.title}}<br>{{item.date}}</h2>
-                        <h2>{{item.hour}}</h2>
+            <h2>{{item.title}}</h2>
             </div>
-<img src="{{item.src}}"/>
+<img src="{{item.src}}" ng-style='imageStyleHighlight'/>
       </div>
       </div>
-    <div class="metadata">
-          <div class="title">
-מעצבים
-          </div>
-           <div class="title">
-הנושא היומי
-          </div>
-           <div class="title">
-מתחילים בעוד
-          </div>
-          <div class="names">
-{{metadata.designersnames}}
-          </div>
-                    <div class="names">
-{{metadata.dailytpoic}}
-          </div>
-                    <div class="names">
-<span ng-show="!isClockOn" class='meta-timer-countdown'>{{remTimeCountdown.hours}}:{{remTimeCountdown.minutes}}:{{remTimeCountdown.seconds}}</span>
-<span ng-show="isClockOn" class='meta-timer-countdown'>התחלנו!</span>
-    
-          </div>
-          </div>
+ 
       <div class="canvas-container-top">
             
 <div class='canvas-container'>
@@ -63,12 +46,16 @@
 </div>
 </div>
 
-<div class="inputcontainer" style="background:{{maincolor}}">
+<div class="inputcontainer" style="">
       <span class='inputcontainer__question'>{{questionPlaceholder}}</span>      
+      <span class='inputcontainer__answer-container' ng-class="{'opacity-hide':(!isAnswerVisible)}">
       <input class='inputcontainer__answer' ng-model="addedValue" ng-keypress="inputKeyPress($event);" >
-      <div class='progressbar'>
+        
+      <div class='progressbar' ng-show="!isCrazy">
             <div class="progressbar-in" style="width:{{timepass}}%;">{{currquestion.timepass}}</div>
       </div>
+      </span>
+      
 </div>
      <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
             

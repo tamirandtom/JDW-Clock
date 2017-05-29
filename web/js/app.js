@@ -6,6 +6,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   var maincolorStart = '#F8E848';
 
   $scope.maincolor = maincolorStart;
+
   $scope.metadata = {};
   $scope.questionPlaceholder = "questions";
   var maxImagesinArr = 9;
@@ -25,7 +26,6 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
 
   //get designer list from DB
-
   var dbObjMetaRef = firebase.database().ref('metadata');
   dbObjMetaRef.on('value', function (snapshot) {
     $scope.metadata.designersnames = snapshot.val().designernames;
@@ -36,15 +36,19 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
 
   // Gif backgrounds - pull all topics from DB
-  var dbObjTopicsRef = firebase.database().ref('topisobj');
+  var dbObjTopicsRef = firebase.database().ref('color');
   dbObjTopicsRef.on('value', function (snapshot) {
     if (snapshot.val()) {
-      $scope.topics = snapshot.val();
-      console.log('Topics updated!');
-      // $scope.ChangeTopic();
+      $scope.colors = snapshot.val();
+      maincolorStart = $scope.colors.prime;
+          $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
+  setNow();
 
-    }
-  });
+
+  // $scope.posterStyleHighlight = {'background': +' !important','color': $scope.colors.secondary,'border': 'solid 2px '+$scope.colors.secondary};
+  // $scope.imageStyleHighlight = {'background': $scope.colors.prime};
+    }  
+});
 
 
   $scope.pushTopic = function (topicURL, topicTitle, topicTime) {
@@ -73,6 +77,8 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
       } else if ($scope.addedValue == 'clockcrazy') {
         $scope.goCrazy();
       } else {
+                  $scope.isAnswerVisible = false;
+
         $scope.ChangeTopic();
         questionsHasQuestionBeenAnswered = 1;
         questionsTimePast = 0;
@@ -143,9 +149,9 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   var questionsArr = questionsArr1;
   var questionsAnswersArr = questionsAnswersArr1;
 
+          $scope.isAnswerVisible = true
 
   $scope.changeQuestion = function (dontWriteAnswer) {
-
     if (currentQuestionsPool == 1) {
       questionsArr = questionsArr1;
       questionsAnswersArr = questionsAnswersArr1;
@@ -175,6 +181,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
         callback: function () {
           questionsTimePast = 0; // zero out timer
           questionsHasQuestionBeenAnswered = 0; // zero out questions\Has Question Been Answered
+          $scope.isAnswerVisible = true
         }
       });
     } else { // if user hasnt typed anything
@@ -183,19 +190,21 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
       clockSpeak(TmpStrAnswer);
 
       $(".inputcontainer__answer").typed({
-        strings: [TmpStrAnswer, ''],
+        strings: [TmpStrAnswer,''],
         typeSpeed: questionsTypeSpeedPerQuestion,
         showCursor: false,
         callback: function () {
+          $scope.isAnswerVisible = false;
           $scope.ChangeTopic(TmpStrAnswer);
           clockSpeak(questionsArr[questionsCurrQuestion]);
-
           $(".inputcontainer__question").typed({
             strings: [questionsArr[questionsCurrQuestion] + "?"],
             typeSpeed: questionsTypeSpeedPerQuestion,
             showCursor: false,
             callback: function () {
               questionsHasQuestionBeenAnswered = 0;
+                        $scope.isAnswerVisible = true
+
             }
           });
         }
