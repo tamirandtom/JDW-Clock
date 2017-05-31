@@ -1,7 +1,55 @@
 var App = angular.module('clock', ['ngAnimate']);
 var currTimeForColorChange = 0;
+
+
+var compositionQuestions = {};
+var abQuestions = {};
+
+function getQuestionsFromCSV() {
+  $.ajax({
+    type: "GET",
+    url: "js/data/ab.csv",
+    dataType: "text",
+    success: function (data) {
+      abQuestions = csvJSON(data);
+      console.log(abQuestions[1]);
+    }
+  });
+
+  $.ajax({
+    type: "GET",
+    url: "js/data/comp.csv",
+    dataType: "text",
+    success: function (data) {
+      compositionQuestions = csvJSON(data);
+      // console.log(compositionQuestions[1].question);
+    }
+  });
+
+}
+
+function csvJSON(csv) {
+  var lines = csv.split("\n");
+  var result = [];
+  var headers = lines[0].split(",");
+  for (var i = 1; i < lines.length; i++) {
+    var obj = {};
+    var currentline = lines[i].split(",");
+    for (var j = 0; j < headers.length; j++) {
+      // console.log(headers[j]);
+      obj[headers[j]] = currentline[j];
+    }
+    result.push(obj);
+  }
+  return result;
+}
+
+
 App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
+  getQuestionsFromCSV();
+
+  // console.log(compositionQuestions);
   $scope.currtopic = 'ba';
   var maincolorStart = '#F8E848';
 
@@ -12,6 +60,31 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   var maxImagesinArr = 9;
   var chanseForImageCreation = 20; // start from 1:20
   $scope.posterImages = [];
+
+
+
+  var totalSecondsCountdown = 0;
+  var tickCounter = 0;
+  var tickRandomSeed = 0;
+  var secondsCountdown = 0;
+
+
+  // Changes the question in the page
+  let questionsHasQuestionBeenAnswered = 0;
+  let questionsPrevQuestion = 0;
+  let questionsTimePerQuestion = 10;
+  let questionsTypeSpeedPerQuestion = 30;
+  let questionsTimePast = 0;
+  var isCrazy = false;
+  var questionsArr = questionsArr1;
+  var questionsAnswersArr = questionsAnswersArr1;
+  var questionsCurrQuestion = 1;
+  $scope.isAnswerVisible = true
+
+
+
+
+
 
 
   var config = {
@@ -41,14 +114,14 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     if (snapshot.val()) {
       $scope.colors = snapshot.val();
       maincolorStart = $scope.colors.prime;
-          $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
-  setNow();
+      $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
+      setNow();
 
 
-  // $scope.posterStyleHighlight = {'background': +' !important','color': $scope.colors.secondary,'border': 'solid 2px '+$scope.colors.secondary};
-  // $scope.imageStyleHighlight = {'background': $scope.colors.prime};
-    }  
-});
+      // $scope.posterStyleHighlight = {'background': +' !important','color': $scope.colors.secondary,'border': 'solid 2px '+$scope.colors.secondary};
+      // $scope.imageStyleHighlight = {'background': $scope.colors.prime};
+    }
+  });
 
 
   $scope.pushTopic = function (topicURL, topicTitle, topicTime) {
@@ -77,7 +150,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
       } else if ($scope.addedValue == 'clockcrazy') {
         $scope.goCrazy();
       } else {
-                  $scope.isAnswerVisible = false;
+        $scope.isAnswerVisible = false;
 
         $scope.ChangeTopic();
         questionsHasQuestionBeenAnswered = 1;
@@ -86,11 +159,6 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     }
   }
 
-
-  var totalSecondsCountdown = 0;
-  var tickCounter = 0;
-  var tickRandomSeed = 0;
-  var secondsCountdown = 0;
   var tick = $interval(function () {
     tickCounter++;
     questionsTimePast++;
@@ -104,12 +172,10 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
 
     // when the clock is working - change the color to red during 3 hours
-    if (totalSecondsCountdown<10800)
-    {
-    $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
+    if (totalSecondsCountdown < 10800) {
+      $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
     } else {
-      if (!$scope.isCrazy) 
-      {   // Go crazy on 3rd hour
+      if (!$scope.isCrazy) {   // Go crazy on 3rd hour
         $scope.isCrazy = true;
       }
     }
@@ -126,14 +192,6 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   }, 1000);
 
 
-  // Changes the question in the page
-  let questionsHasQuestionBeenAnswered = 0;
-  let questionsPrevQuestion = 0;
-  let questionsTimePerQuestion = 30;
-  let questionsTypeSpeedPerQuestion = 30;
-  let questionsTimePast = 0;
-  var isCrazy = false;
-
   $scope.goCrazy = function () { // Change on last 30 mins
     $scope.isCrazy = true;
     isCrazy = true;
@@ -146,36 +204,37 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
 
   // var currentQuestionsPool = 2;
-  var questionsArr = questionsArr1;
-  var questionsAnswersArr = questionsAnswersArr1;
-
-          $scope.isAnswerVisible = true
+var TmpStrAnswer;
 
   $scope.changeQuestion = function (dontWriteAnswer) {
-    if (currentQuestionsPool == 1) {
-      questionsArr = questionsArr1;
-      questionsAnswersArr = questionsAnswersArr1;
+    // if (currentQuestionsPool == 1) {
+    //   questionsArr = questionsArr1;
 
-    } else {
-      questionsArr = questionsArr2;
-      questionsAnswersArr = questionsAnswersArr2;
+    //TODO : random between 2 questions
+    currQuestionsOBJ = abQuestions;
 
-    }
+    // } else {
+    //   questionsArr = questionsArr2;
+    //   questionsAnswersArr = questionsAnswersArr2;
+
+    // }
     // console.log('in qchange!');
 
     questionsTimePast = 0;
     // Select random different quesion
-    let questionsCurrQuestion = Math.floor((Math.random() * questionsArr.length));
+    questionsCurrQuestion = Math.floor((Math.random() * currQuestionsOBJ.length));
     while (questionsCurrQuestion == questionsPrevQuestion) {
-      questionsCurrQuestion = Math.floor((Math.random() * questionsArr.length));
+      questionsCurrQuestion = Math.floor((Math.random() * currQuestionsOBJ.length));
     }
 
 
     if (dontWriteAnswer) { // if user answered the prev question
-      clockSpeak(questionsArr[questionsCurrQuestion]);
+      // clockSpeak(questionsArr[questionsCurrQuestion.question]);
+
+
 
       $(".inputcontainer__question").typed({
-        strings: [questionsArr[questionsCurrQuestion] + "?"],
+        strings: [currQuestionsOBJ[questionsCurrQuestion].question + "?"],
         typeSpeed: questionsTypeSpeedPerQuestion,
         showCursor: false,
         callback: function () {
@@ -185,25 +244,25 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
         }
       });
     } else { // if user hasnt typed anything
-      let TmpStrAnswer = questionsAnswersArr[questionsPrevQuestion];
+      TmpStrAnswer = currQuestionsOBJ[questionsPrevQuestion];
 
-      clockSpeak(TmpStrAnswer);
+      // clockSpeak(TmpStrAnswer);
 
       $(".inputcontainer__answer").typed({
-        strings: [TmpStrAnswer,''],
+        strings: [TmpStrAnswer.option_a, ''],
         typeSpeed: questionsTypeSpeedPerQuestion,
         showCursor: false,
         callback: function () {
           $scope.isAnswerVisible = false;
-          $scope.ChangeTopic(TmpStrAnswer);
-          clockSpeak(questionsArr[questionsCurrQuestion]);
+          $scope.ChangeTopic(TmpStrAnswer.option_a_translation);
+          // clockSpeak();
           $(".inputcontainer__question").typed({
-            strings: [questionsArr[questionsCurrQuestion] + "?"],
+            strings: [currQuestionsOBJ[questionsCurrQuestion].question + "?"],
             typeSpeed: questionsTypeSpeedPerQuestion,
             showCursor: false,
             callback: function () {
               questionsHasQuestionBeenAnswered = 0;
-                        $scope.isAnswerVisible = true
+              $scope.isAnswerVisible = true
 
             }
           });
@@ -213,96 +272,107 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     questionsPrevQuestion = questionsCurrQuestion;
   }
 
+
+  // $scope.changeQuestion();  
+
   // $scope.ChangeText = function () {
   //   $scope.itterations = 0;
   // }
 
+  var translatedValue = '';
+
+
+
+  function addImage(currentstring,originalString) {
+    $.ajax({
+      url: "https://api.giphy.com/v1/gifs/search?q=" + currentstring.replace(/%20/g, '+') + "&api_key=dc6zaTOxFJmzC",
+      type: "GET",
+      success: function (response) {
+
+        let numOfImagesToAdd = response.data.length;
+
+        if (numOfImagesToAdd > 0) {
+          let randomURL = response.data[Math.floor((Math.random() * response.data.length))].images.fixed_width.url;
+          
+          if (originalString)
+          {
+            currentstring = originalString;
+          }
+          
+          $scope.currtopic = {
+            title: currentstring,
+            imgAddr: randomURL
+          };
+
+          $scope.posterImages.push({
+            title: currentstring,
+            src: randomURL,
+            topSpace: Math.floor((Math.random() * 150)),
+            posterWidth: Math.floor((Math.random() * 220) + 100),
+            date: getCurrTime(),
+            hour: $scope.metadata.dailytpoic
+          });
+          if (IsQueryEnteredByUser)
+            $scope.pushTopic(randomURL, $scope.addedValue, 'dd');
+          $scope.addedValue = '';
+
+
+          if (questionsHasQuestionBeenAnswered) {
+            $scope.changeQuestion(1);
+            questionsHasQuestionBeenAnswered = 0;
+            questionsTimePast = 0;
+
+          }
+        } else {
+          //no images found, enter some random value
+          $scope.ChangeTopic('robot');
+
+        }
+
+
+
+
+      }
+    });
+  }
+  var IsQueryEnteredByUser = 0;
 
   $scope.ChangeTopic = function (gifquery) {
-    let IsQueryEnteredByUser = 0;
     let result;
     let count = 0;
-
+    IsQueryEnteredByUser = 0;
     if ($scope.posterImages.length > maxImagesinArr) { // Max 10 images array shift
       $scope.posterImages.shift();
     }
     if (!gifquery) { // if this is a user-entered value
+      
       IsQueryEnteredByUser = 1;
-      clockSpeak($scope.addedValue);
+
+      // Add the user entered query as is to the DB
       addQueryToDataBase($scope.addedValue);
+      // Change the value to the translation if matches
+      if ($scope.addedValue == abQuestions[questionsCurrQuestion].option_b) {
+        translatedValue = abQuestions[questionsCurrQuestion].option_b_translation;
+        addImage(translatedValue,$scope.addedValue);
 
-    }
-    if ($scope.addedValue || gifquery) {
-      let currentstring = $scope.addedValue;
-      // console.log('inside ChangeTopic with value');
-      if (gifquery) {
-        currentstring = gifquery;
+      } else if ($scope.addedValue == abQuestions[questionsCurrQuestion].option_a) {
+        translatedValue = abQuestions[questionsCurrQuestion].option_a_translation;
+        addImage(translatedValue,$scope.addedValue);
+      } else {
+        // trying to get the topic from translate
+        translatedValue = 'robot';
+        $.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170531T074712Z.5121b5af8a368ef5.6b4f300f5fdb567888847853065aed1c2daf5453&text=' + $scope.addedValue + '&lang=en', function (data) {
+          
+          // When translation is available (200), enter the text to the addImage function
+          
+          translatedValue = data.text[0];
+          addImage(translatedValue,$scope.addedValue);
+        });
       }
-
-      $.ajax({
-        url: "https://api.giphy.com/v1/gifs/search?q=" + currentstring.replace(/%20/g, '+') + "&api_key=dc6zaTOxFJmzC",
-        type: "GET",
-        success: function (response) {
-
-          let numOfImagesToAdd = response.data.length;
-
-          if (numOfImagesToAdd > 0) {
-            let randomURL = response.data[Math.floor((Math.random() * response.data.length))].images.fixed_width.url;
-            $scope.currtopic = {
-              title: currentstring,
-              imgAddr: randomURL
-            };
-
-            $scope.posterImages.push({
-              title: currentstring,
-              src: randomURL,
-              topSpace: Math.floor((Math.random() * 150)),
-              posterWidth: Math.floor((Math.random() * 220) + 100),
-              date: getCurrTime(),
-              hour: $scope.metadata.dailytpoic
-            });
-            if (IsQueryEnteredByUser)
-              $scope.pushTopic(randomURL, $scope.addedValue, 'dd');
-            $scope.addedValue = '';
-
-
-            if (questionsHasQuestionBeenAnswered) {
-              $scope.changeQuestion(1);
-              questionsHasQuestionBeenAnswered = 0;
-              questionsTimePast = 0;
-
-            }
-          } else {
-            //no images found, enter some random value
-            $scope.ChangeTopic('robot');
-
-          }
-
-
-
-
-        }
-      });
+    } else {
+      // If the user didnt enter a value just add the TmpStrAnswer 1st optiion
+      addImage(gifquery,TmpStrAnswer.option_a);
     }
-    // } else {
-    //   // console.log('inside ChangeTopic no value');
-    //   $scope.addedValue = '';
-    //   for (var prop in $scope.topics) {
-    //     if (Math.random() < 1 / ++count) {
-    //       result = prop;
-    //     }
-    //   }
-    //   $scope.currtopic = $scope.topics[result];
-    //   $scope.posterImages.push({
-    //     title: $scope.topics[result].title,
-    //     src: $scope.topics[result].imgAddr,
-    //     posterWidth: Math.floor((Math.random() * 220) + 100),
-    //     topSpace: Math.floor((Math.random() * 150)),
-    //     date: getCurrTime(),
-    //     hour: $scope.metadata.dailytpoic
-    //   });
-
-    // }
   }
 
 

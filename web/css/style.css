@@ -167,58 +167,58 @@ body {
 
 .cm-poster-container.zoom10 .cm-poster {
     transform: scale(0.05);
-    -webkit-filter: blur(5px);
+    /*-webkit-filter: blur(5px);*/
     /* Safari */
-    filter: blur(5px);
+    /*filter: blur(5px);*/
 }
 
 .cm-poster-container.zoom9 .cm-poster {
     transform: scale(0.1);
-    -webkit-filter: blur(5px);
+    /*-webkit-filter: blur(5px);*/
     /* Safari */
-    filter: blur(5px);
+    /*filter: blur(5px);*/
 }
 
 .cm-poster-container.zoom8 .cm-poster {
     transform: scale(0.2);
-    -webkit-filter: blur(4px);
+    /*-webkit-filter: blur(4px);*/
     /* Safari */
-    filter: blur(4px);
+    /*filter: blur(4px);*/
 }
 
 .cm-poster-container.zoom7 .cm-poster {
     transform: scale(0.3);
-    -webkit-filter: blur(4px);
+    /*-webkit-filter: blur(4px);*/
     /* Safari */
-    filter: blur(4px);
+    /*filter: blur(4px);*/
 }
 
 .cm-poster-container.zoom6 .cm-poster {
     transform: scale(0.4);
-    -webkit-filter: blur(3px);
+    /*-webkit-filter: blur(3px);*/
     /* Safari */
-    filter: blur(3px);
+    /*filter: blur(3px);*/
 }
 
 .cm-poster-container.zoom5 .cm-poster {
     transform: scale(0.5);
-    -webkit-filter: blur(3px);
+    /*-webkit-filter: blur(3px);*/
     /* Safari */
-    filter: blur(3px);
+    /*filter: blur(3px);*/
 }
 
 .cm-poster-container.zoom4 .cm-poster {
     transform: scale(0.6);
-    -webkit-filter: blur(2px);
+    /*-webkit-filter: blur(2px);*/
     /* Safari */
-    filter: blur(2px);
+    /*filter: blur(2px);*/
 }
 
 .cm-poster-container.zoom3 .cm-poster {
     transform: scale(0.7);
-    -webkit-filter: blur(1px);
+    /*-webkit-filter: blur(1px);*/
     /* Safari */
-    filter: blur(1px);
+    /*filter: blur(1px);*/
 }
 
 .cm-poster-container.zoom2 .cm-poster {
