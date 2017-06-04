@@ -37,7 +37,15 @@ function csvJSON(csv) {
     var currentline = lines[i].split(",");
     for (var j = 0; j < headers.length; j++) {
       // console.log(headers[j]);
+      if (currentline[j])
+      {
       obj[headers[j]] = currentline[j];
+
+      }
+else {
+      obj[headers[j]] = currentline[0].split(' או ')[0];
+  
+}
     }
     result.push(obj);
   }
@@ -57,7 +65,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
   $scope.metadata = {};
   $scope.questionPlaceholder = "questions";
-  var maxImagesinArr = 9;
+  var maxImagesinArr = 4;
   var chanseForImageCreation = 20; // start from 1:20
   $scope.posterImages = [];
 
@@ -341,9 +349,7 @@ var TmpStrAnswer;
         // trying to get the topic from translate
         translatedValue = 'robot';
         $.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170531T074712Z.5121b5af8a368ef5.6b4f300f5fdb567888847853065aed1c2daf5453&text=' + $scope.addedValue + '&lang=en', function (data) {
-          
           // When translation is available (200), enter the text to the addImage function
-          
           translatedValue = data.text[0];
           addImage(translatedValue,$scope.addedValue);
         });

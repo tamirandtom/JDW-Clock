@@ -1,0 +1,32 @@
+
+
+.tmr-poster-container {
+display:flex;
+box-sizing:border-box;
+justify-content:center;
+align-items:flex-start;
+/*background:red;*/
+width:calc(100% - 52px);
+margin-left:26px;
+padding-top:26px;
+}
+
+.tmr-poster {
+padding:10px;
+margin:6px;
+width:calc(20%);
+background:#EAC032;
+}
+
+.tmr-poster h2 {
+font-size:32px;
+line-height:36px;
+text-align:right;
+font-family:'simpler',Arial;
+color:#000;
+margin:10px 0 10px 0
+}
+.tmr-poster img {
+display:block;
+width:100%;
+}

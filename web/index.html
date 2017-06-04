@@ -26,18 +26,13 @@
 
 
 <body id="top" class="overflow-hidden" ng-controller="index" style="background:{{maincolor}}" ng-class="{'isCrazy':(isCrazy)}">
+<div class='tmr-poster-container'>
+<div class="tmr-poster" ng-repeat="item in posterImages">
+                  <h2>{{item.title}}</h2>
+<img src="{{item.src}}"/>
+ </div>
+</div>
 
-
-
-      <div class="cm-poster-container" ng-repeat="item in posterImages" ng-class="{'last-poster':($last),'zoom10':($index==0),'zoom9':($index==1),'zoom8':($index==2),'zoom7':($index==3),'zoom6':($index==4),'zoom5':($index==5),'zoom4':($index==6),'zoom3':($index==7),'zoom2':($index==8),'zoom1':($index==9)}" >
-            <div class='cm-poster-spacer'></div>
-      <div class="cm-poster" style="width:{{item.posterWidth}}px;background:{{maincolor}}"> 
-            <div class="cm-poster__headline">
-            <h2>{{item.title}}</h2>
-            </div>
-<img src="{{item.src}}" ng-style='imageStyleHighlight'/>
-      </div>
-      </div>
  
       <div class="canvas-container-top">
             
@@ -46,8 +41,8 @@
 </div>
 </div>
 
-<div class="inputcontainer" style="">
-      <span class='inputcontainer__question'>{{questionPlaceholder}}</span>      
+<div class="inputcontainer">
+      <span class='inputcontainer__question'>{{questionPlaceholder}}</span>   
       <span class='inputcontainer__answer-container' ng-class="{'opacity-hide':(!isAnswerVisible)}">
       <input class='inputcontainer__answer' ng-model="addedValue" ng-keypress="inputKeyPress($event);" >
         
