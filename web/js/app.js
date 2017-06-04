@@ -43,7 +43,7 @@ function csvJSON(csv) {
 
       }
 else {
-      obj[headers[j]] = currentline[0].split(' או ')[0];
+      obj[headers[j]] = currentline[0].split('או')[0];
   
 }
     }
@@ -438,9 +438,9 @@ var TmpStrAnswer;
 
   var canvas = document.getElementById("canvas");
   var ctx = canvas.getContext("2d");
-  var radius = canvas.height / 2;
+  var radius = 344 ;
   ctx.translate(radius, radius);
-  radius = radius * 0.8;
+   radius = radius * 0.96;
 
 
   $scope.drawClock = function () {
@@ -502,11 +502,12 @@ var TmpStrAnswer;
   function drawNumbers(ctx, radius) {
     let ang;
     let num;
-    ctx.font = radius * 0.15 + "px Simpler";
+    ctx.font = "112px simpler";
     ctx.textBaseline = "middle";
+          ctx.fillStyle = 'blue';
     ctx.textAlign = "center";
     for (num = 1; num < 5; num++) {
-      ang = (num - 1) * Math.PI / 2;
+      ang = (num ) * Math.PI / 2;
       ctx.rotate(ang);
       ctx.translate(0, -radius * 0.8);
       ctx.rotate(-ang);
@@ -527,8 +528,9 @@ var TmpStrAnswer;
     ctx.beginPath();
     ctx.arc(0, 0, radius, 0, 2 * Math.PI);
     ctx.fillStyle = $scope.maincolor;
-    ctx.fill();
-    ctx.lineWidth = 4;
+    // ctx.fill();
+    ctx.lineWidth = 20;
+     ctx.strokeStyle = "#0000ff";
     if (isCrazy == true) {
       ctx.strokeStyle = "#ffffff";
     }

@@ -46,7 +46,7 @@
       <span class='inputcontainer__answer-container' ng-class="{'opacity-hide':(!isAnswerVisible)}">
       <input class='inputcontainer__answer' ng-model="addedValue" ng-keypress="inputKeyPress($event);" >
         
-      <div class='progressbar' ng-show="!isCrazy">
+      <div class='progressbar' ng-show="!isCrazy" ng-class="{'opacity-hide':(!isAnswerVisible)}">
             <div class="progressbar-in" style="width:{{timepass}}%;">{{currquestion.timepass}}</div>
       </div>
       </span>
