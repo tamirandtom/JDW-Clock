@@ -207,32 +207,20 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 var TmpStrAnswer;
 
   $scope.changeQuestion = function (dontWriteAnswer) {
-    // if (currentQuestionsPool == 1) {
-    //   questionsArr = questionsArr1;
-
-    //TODO : random between 2 questions
+   
+   // TODO: select from 2 questions structures
     currQuestionsOBJ = abQuestions;
 
-    // } else {
-    //   questionsArr = questionsArr2;
-    //   questionsAnswersArr = questionsAnswersArr2;
-
-    // }
-    // console.log('in qchange!');
-
     questionsTimePast = 0;
+   
+   
     // Select random different quesion
     questionsCurrQuestion = Math.floor((Math.random() * currQuestionsOBJ.length));
     while (questionsCurrQuestion == questionsPrevQuestion) {
       questionsCurrQuestion = Math.floor((Math.random() * currQuestionsOBJ.length));
     }
 
-
     if (dontWriteAnswer) { // if user answered the prev question
-      // clockSpeak(questionsArr[questionsCurrQuestion.question]);
-
-
-
       $(".inputcontainer__question").typed({
         strings: [currQuestionsOBJ[questionsCurrQuestion].question + "?"],
         typeSpeed: questionsTypeSpeedPerQuestion,
@@ -272,16 +260,7 @@ var TmpStrAnswer;
     questionsPrevQuestion = questionsCurrQuestion;
   }
 
-
-  // $scope.changeQuestion();  
-
-  // $scope.ChangeText = function () {
-  //   $scope.itterations = 0;
-  // }
-
   var translatedValue = '';
-
-
 
   function addImage(currentstring,originalString) {
     $.ajax({
