@@ -445,7 +445,8 @@ var TmpStrAnswer;
 
   $scope.drawClock = function () {
     // console.log('in DrawClock');
-    let seed = Math.floor(Math.random() * 100) + 1;
+    ctx.clearRect(-canvas.width, -canvas.height, canvas.width*2, canvas.height*2);
+
     drawFace(ctx, radius);
     drawNumbers(ctx, radius);
     drawTime(ctx, radius);
