@@ -145,7 +145,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
       key: objkey
     };
     updates['/topisobj/' + objkey] = topicData;
-    firebase.database().ref().update(updates);
+     firebase.database().ref().update(updates);
   }
 
   var deadline = new Date();
@@ -250,7 +250,8 @@ var TmpStrAnswer;
         showCursor: false,
         callback: function () {
           $scope.isAnswerVisible = false;
-          $scope.ChangeTopic(TmpStrAnswer.option_a_translation);
+          //TODO: change to eng
+          $scope.ChangeTopic(TmpStrAnswer.option_a);
           // clockSpeak();
           $(".inputcontainer__question").typed({
             strings: [currQuestionsOBJ[questionsCurrQuestion].question + "?"],
@@ -270,7 +271,7 @@ var TmpStrAnswer;
 
   var translatedValue = '';
 
-  function addImage(currentstring,originalString) {
+  function addImage(currentstring,originalString,toPush) {
     $.ajax({
       url: "https://api.giphy.com/v1/gifs/search?q=" + currentstring.replace(/%20/g, '+') + "&api_key=dc6zaTOxFJmzC",
       type: "GET",
@@ -299,8 +300,11 @@ var TmpStrAnswer;
             date: getCurrTime(),
             hour: $scope.metadata.dailytpoic
           });
-          if (IsQueryEnteredByUser)
-            $scope.pushTopic(randomURL, $scope.addedValue, 'dd');
+          if (toPush)
+          {
+            $scope.pushTopic(randomURL, $scope.addedValue, '1');
+
+          }
           $scope.addedValue = '';
 
 
@@ -331,33 +335,31 @@ var TmpStrAnswer;
     if ($scope.posterImages.length > maxImagesinArr) { // Max 10 images array shift
       $scope.posterImages.shift();
     }
-    if (!gifquery) { // if this is a user-entered value
-      
-      IsQueryEnteredByUser = 1;
-
+    // if (!gifquery) { // if this is a user-entered value
+      console.log(gifquery);      
       // Add the user entered query as is to the DB
       addQueryToDataBase($scope.addedValue);
       // Change the value to the translation if matches
-      if ($scope.addedValue == abQuestions[questionsCurrQuestion].option_b) {
-        translatedValue = abQuestions[questionsCurrQuestion].option_b_translation;
-        addImage(translatedValue,$scope.addedValue);
-
-      } else if ($scope.addedValue == abQuestions[questionsCurrQuestion].option_a) {
-        translatedValue = abQuestions[questionsCurrQuestion].option_a_translation;
-        addImage(translatedValue,$scope.addedValue);
-      } else {
         // trying to get the topic from translate
-        translatedValue = 'robot';
-        $.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170531T074712Z.5121b5af8a368ef5.6b4f300f5fdb567888847853065aed1c2daf5453&text=' + $scope.addedValue + '&lang=en', function (data) {
+        // translatedValue = 'robot';
+        translatedValue = $scope.addedValue;
+        let toPush = true;
+        if (gifquery) {
+          translatedValue = gifquery;
+         toPush = false;
+          
+        }
+        $.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170531T074712Z.5121b5af8a368ef5.6b4f300f5fdb567888847853065aed1c2daf5453&text=' + translatedValue + '&lang=en', function (data) {
           // When translation is available (200), enter the text to the addImage function
-          translatedValue = data.text[0];
-          addImage(translatedValue,$scope.addedValue);
+          // translatedValue =
+          let newValue =  data.text[0];
+          addImage(newValue,translatedValue,toPush);
         });
-      }
-    } else {
+      
+    // } else {
       // If the user didnt enter a value just add the TmpStrAnswer 1st optiion
-      addImage(gifquery,TmpStrAnswer.option_a);
-    }
+      // addImage(gifquery,TmpStrAnswer.option_a);
+    // }
   }
 
 
@@ -470,15 +472,17 @@ var TmpStrAnswer;
     //hour
     hour = hour % 12;
     hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
-
-
-    drawHand(ctx, hour * 3, radius * 0.5, 4);
+    drawHand(ctx, hour * 3, radius * 0.5, 10); // TIMES 3 because 4 hours total
     //minute
-    minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-    drawHand(ctx, minute, radius * 0.8, 4);
+    // minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+    minute = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
+    
+    drawHand(ctx, minute, radius * 0.8, 20);
+   
+   
     // second
     second = (second * Math.PI / 30);
-    drawHand(ctx, second, radius * 0.9, 4);
+    // drawHand(ctx, second, radius * 0.9, 4);
 
 
     // console.log(((second * -1 )/6));
@@ -494,10 +498,10 @@ var TmpStrAnswer;
     ctx.lineWidth = width;
     ctx.lineCap = "butt";
     ctx.moveTo(0, 0);
-    ctx.rotate(pos);
+    ctx.rotate(-pos);
     ctx.lineTo(0, -length);
     ctx.stroke();
-    ctx.rotate(-pos);
+    ctx.rotate(pos);
   }
 
   function drawNumbers(ctx, radius) {
