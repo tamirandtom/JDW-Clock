@@ -65,7 +65,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
   $scope.metadata = {};
   $scope.questionPlaceholder = "questions";
-  var maxImagesinArr = 4;
+  var maxImagesinArr = 5;
   var chanseForImageCreation = 20; // start from 1:20
   $scope.posterImages = [];
 
@@ -170,6 +170,14 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   var tick = $interval(function () {
     tickCounter++;
     questionsTimePast++;
+
+    let currTimeProg = totalSecondsCountdown/14400;
+    console.log(currTimeProg*100)
+    if ((currTimeProg*100)%1 == 0) {
+   changeCircularProgress(100 - Math.floor(currTimeProg*100));    
+
+    } 
+
     $scope.remTimeCountdown = getTimeRemaining(deadline);
     $scope.timepass = (questionsTimePast / questionsTimePerQuestion) * 100;
     // $scope.currquestion.timepass = '10'
@@ -319,10 +327,6 @@ var TmpStrAnswer;
           $scope.ChangeTopic('robot');
 
         }
-
-
-
-
       }
     });
   }
@@ -455,6 +459,11 @@ var TmpStrAnswer;
   }
 
 
+function changeCircularProgress(value) {
+    	$('.radial-progress').attr('data-progress', Math.floor(value)); 
+}
+
+
   function drawTime(ctx, radius) {
     let now = new Date();
     let hour = now.getHours() - startHour;
@@ -471,27 +480,30 @@ var TmpStrAnswer;
 
     //hour
     hour = hour % 12;
-    hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
-    drawHand(ctx, hour * 3, radius * 0.5, 10); // TIMES 3 because 4 hours total
+    let newHour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
+    drawHand(ctx, newHour*3, radius * 0.5, 20); // TIMES 3 because 4 hours total
     //minute
-    // minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
-    minute = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
+    minute = (minute * Math.PI / 30) + (second * Math.PI / (30 * 60));
+    // minute = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
     
-    drawHand(ctx, minute, radius * 0.8, 20);
-   
+    drawHand(ctx, minute, radius * 0.8, 6);
    
     // second
     second = (second * Math.PI / 30);
     // drawHand(ctx, second, radius * 0.9, 4);
 
-
     // console.log(((second * -1 )/6));
     // $scope.maincolor = 'fff';
+
 
   }
 
   function drawHand(ctx, pos, length, width) {
     if (isCrazy == true) {
+      ctx.strokeStyle = "#ffffff";
+    }
+
+      if (width == 6) {
       ctx.strokeStyle = "#ffffff";
     }
     ctx.beginPath();

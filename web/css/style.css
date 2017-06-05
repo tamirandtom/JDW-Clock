@@ -73,7 +73,7 @@ body {
 width:100%;
 direction:rtl;
 padding-right:10px;
-
+position:relative;
 }
 .inputcontainer__answer-container {
     opacity: 1;

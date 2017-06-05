@@ -26,8 +26,26 @@
 
 
 <body id="top" class="overflow-hidden" ng-controller="index" style="background:{{maincolor}}" ng-class="{'isCrazy':(isCrazy)}">
+<div class="circular-progress-container">
+
+
+<div class="radial-progress" data-progress="0">
+	<div class="circle">
+		<div class="mask full">
+			<div class="fill"></div>
+		</div>
+		<div class="mask half">
+			<div class="fill"></div>
+			<div class="fill fix"></div>
+		</div>
+	</div>
+	
+</div>
+
+</div>
+
 <div class='tmr-poster-container'>
-<div class="tmr-poster" ng-repeat="item in posterImages">
+<div class="tmr-poster" ng-repeat="item in posterImages" ng-class="{'an-last':($last),'an-first':($first)}">
                   <h2>{{item.title}}</h2>
 <img src="{{item.src}}"/>
  </div>

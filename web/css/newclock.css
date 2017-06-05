@@ -1,22 +1,52 @@
 
-
+.circular-progress-container {
+    position:fixed;
+    top:0px;
+    height:100%;
+    width:100%;
+    left:0px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
 .tmr-poster-container {
 display:flex;
 box-sizing:border-box;
 justify-content:center;
 align-items:flex-start;
 /*background:red;*/
-width:calc(100% - 52px);
-margin-left:26px;
+width:calc(100% - 32px);
+/*margin-left:26px;*/
 padding-top:26px;
 }
 
 .tmr-poster {
 padding:10px;
 margin:6px;
-width:calc(20%);
+width:20%;
+opacity:1;
 background:#EAC032;
+transition:all 0.2s cubic-bezier(.38,.14,.27,.97);
 }
+
+.tmr-poster.an-first {
+transition:all 0.4s linear;
+    
+transform: translate(-500px,0px);
+width:0px;
+}
+.tmr-poster.an-last {
+background:#fff;
+}
+
+.tmr-poster.ng-enter {
+  width:0px;
+}
+/* The finishing CSS styles for the enter animation */
+.tmr-poster.ng-enter.ng-enter-active {
+width:20%;
+}
+
 
 .tmr-poster h2 {
 font-size:32px;
@@ -24,9 +54,29 @@ line-height:36px;
 text-align:right;
 font-family:'simpler',Arial;
 color:#000;
-margin:10px 0 10px 0
+margin:10px 0 10px 0;
+transition:all 0.2s linear;
+
 }
+
+
+.tmr-poster.an-last h2,.tmr-poster.an-last img {
+color:#0000ff;
+transition-delay: 0.4s;
+}
+
+.tmr-poster.ng-enter h2,.tmr-poster.ng-enter img {
+    opacity:0;
+}
+
+.tmr-poster.ng-enter.ng-enter-active h2,.tmr-poster.ng-enter.ng-enter-active img {
+    opacity:1;
+}
+
+
+
 .tmr-poster img {
 display:block;
 width:100%;
+transition:all 0.2s linear;
 }
