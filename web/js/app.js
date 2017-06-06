@@ -12,7 +12,7 @@ function getQuestionsFromCSV() {
     dataType: "text",
     success: function (data) {
       abQuestions = csvJSON(data);
-      console.log(abQuestions[1]);
+      // console.log(abQuestions[1]);
     }
   });
 
@@ -172,7 +172,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     questionsTimePast++;
 
     let currTimeProg = totalSecondsCountdown/14400;
-    console.log(currTimeProg*100)
+    // console.log(currTimeProg*100)
     if ((currTimeProg*100)%1 == 0) {
    changeCircularProgress(100 - Math.floor(currTimeProg*100));    
 
@@ -340,7 +340,7 @@ var TmpStrAnswer;
       $scope.posterImages.shift();
     }
     // if (!gifquery) { // if this is a user-entered value
-      console.log(gifquery);      
+      // console.log(gifquery);      
       // Add the user entered query as is to the DB
       addQueryToDataBase($scope.addedValue);
       // Change the value to the translation if matches
@@ -429,7 +429,7 @@ var TmpStrAnswer;
   function addQueryToDataBase(query) {
 
     //TODO: add topic to DB
-    console.log('user enter!');
+    // console.log('user enter!');
   }
 
 
