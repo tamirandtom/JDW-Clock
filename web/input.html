@@ -21,27 +21,30 @@
       <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="css/main.css">
+
+      <style>
+      .submitbutton {
+            background:red;
+            display:inline-block;
+            padding:10px 14px;
+            font-size:24px;
+            font-family:'Arial', Helvetica, sans-serif;
+            margin:50px;
+      }
+      </style>
 </head>
 
 <body id="top" ng-class="{'body--dialog-open':(selectedIndex.current != -1)}" ng-controller="index">
 
-      <input ng-model="textValue" placeholder="Speak">
-      <div class="submitbutton" ng-click="onSubmitClick()"> Submit</div>
-      <br><br>
-      <input placeholder="Add topic" id='topicinput'>
-      <div ng-click="pushTopic()">Add Topic</div>
-
-      <div class="static ng-leave" ng-repeat="item in topics">
-            <div class='' style="height:{{item.topSpace}}px"></div>
-            <div class="" style="width:{{item.posterWidth}}px;background:#{{maincolor}}">
-                  <div class="">
-                        <h2>{{item.title}}<br>{{item.date}}</h2>
+      <div class="submitbutton" ng-click="onSubmitClick()">Start Clock</div>
+<br><br>
+ 
+            <div class='tmr-poster' ng-repeat="item in topics" style="display:inline-block">
+   <h2>{{item.title}}</h2>
+                  <img src="{{item.imgAddr}}" />                  
                         <button ng-click="removeTopic(item.key)">delete</button>
-
-                  </div>
-                  <img src="{{item.imgAddr}}" />
             </div>
-      </div>
+    
 
 
 

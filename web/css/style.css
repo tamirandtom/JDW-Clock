@@ -106,19 +106,13 @@ direction:rtl;
 }
 
 .isCrazy .inputcontainer {
-    box-shadow: none;
-    background: none !important;
+    /*box-shadow: none;*/
+    /*background: none !important;*/
 }
 
 .isCrazy .inputcontainer input,
 .isCrazy .inputcontainer .inputcontainer__question {
-    color: #fff;
-    opacity: 1;
-    font-size: 40px;
-    font-family: 'Roboto Condensed';
     text-transform: uppercase;
-    background:none;
-
 }
 
 .inputcontainer input {

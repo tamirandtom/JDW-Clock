@@ -14,7 +14,7 @@ App.controller('index', ['$scope', '$http', '$location', function ($scope, $http
 
 
   $scope.onSubmitClick = function () {
-    firebase.database().ref('talk/words').set($scope.textValue);
+            firebase.database().ref('clockstart/start').set(1);
   }
 
   var dbObjTopicsRef = firebase.database().ref('topisobj');

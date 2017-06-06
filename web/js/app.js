@@ -1,6 +1,6 @@
 var App = angular.module('clock', ['ngAnimate']);
 var currTimeForColorChange = 0;
-
+var minutesToCrazyMode = 5;
 
 var compositionQuestions = {};
 var abQuestions = {};
@@ -43,7 +43,7 @@ function csvJSON(csv) {
 
       }
 else {
-      obj[headers[j]] = currentline[0].split('או')[0];
+      obj[headers[j]] = currentline[0].split(' או ')[0];
   
 }
     }
@@ -80,7 +80,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   // Changes the question in the page
   let questionsHasQuestionBeenAnswered = 0;
   let questionsPrevQuestion = 0;
-  let questionsTimePerQuestion = 10;
+  let questionsTimePerQuestion = 30;
   let questionsTypeSpeedPerQuestion = 30;
   let questionsTimePast = 0;
   var isCrazy = false;
@@ -175,8 +175,8 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     // console.log(currTimeProg*100)
     if ((currTimeProg*100)%1 == 0) {
    changeCircularProgress(100 - Math.floor(currTimeProg*100));    
-
     } 
+
 
     $scope.remTimeCountdown = getTimeRemaining(deadline);
     $scope.timepass = (questionsTimePast / questionsTimePerQuestion) * 100;
@@ -188,14 +188,12 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
 
 
     // when the clock is working - change the color to red during 3 hours
-    if (totalSecondsCountdown < 10800) {
-      $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
-    } else {
+    if (totalSecondsCountdown > (60*minutesToCrazyMode)) {
+      // $scope.maincolor = chroma.mix(maincolorStart, 'red', (totalSecondsCountdown / 10800)).hex();
       if (!$scope.isCrazy) {   // Go crazy on 3rd hour
-        $scope.isCrazy = true;
-      }
+        $scope.goCrazy();
     }
-
+    }
 
     // change question pool on every other hour
     let now = new Date();
@@ -211,7 +209,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   $scope.goCrazy = function () { // Change on last 30 mins
     $scope.isCrazy = true;
     isCrazy = true;
-    questionsTimePerQuestion = 2;
+    questionsTimePerQuestion = 3;
     questionsTypeSpeedPerQuestion = 0;
     $scope.maincolor = '#FF0000';
     maincolorStart = '#ff0000';
@@ -324,8 +322,8 @@ var TmpStrAnswer;
           }
         } else {
           //no images found, enter some random value
-          $scope.ChangeTopic('robot');
-
+         // $scope.ChangeTopic('robot');
+         addImage('robot',originalString,toPush);
         }
       }
     });
@@ -351,14 +349,21 @@ var TmpStrAnswer;
         if (gifquery) {
           translatedValue = gifquery;
          toPush = false;
-          
+        }
+        if (gifquery=='robot') {
+           translatedValue = $scope.addedValue;
+         toPush = true;
         }
         $.get('https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170531T074712Z.5121b5af8a368ef5.6b4f300f5fdb567888847853065aed1c2daf5453&text=' + translatedValue + '&lang=en', function (data) {
           // When translation is available (200), enter the text to the addImage function
           // translatedValue =
           let newValue =  data.text[0];
           addImage(newValue,translatedValue,toPush);
-        });
+        })
+        .fail(function() {
+          console.log('no translation!');
+       addImage('robot',translatedValue,toPush);
+  });
       
     // } else {
       // If the user didnt enter a value just add the TmpStrAnswer 1st optiion
@@ -499,9 +504,9 @@ function changeCircularProgress(value) {
   }
 
   function drawHand(ctx, pos, length, width) {
-    if (isCrazy == true) {
-      ctx.strokeStyle = "#ffffff";
-    }
+    // if (isCrazy == true) {
+    //   ctx.strokeStyle = "#ffffff";
+    // }
 
       if (width == 6) {
       ctx.strokeStyle = "#ffffff";
@@ -528,9 +533,9 @@ function changeCircularProgress(value) {
       ctx.rotate(ang);
       ctx.translate(0, -radius * 0.8);
       ctx.rotate(-ang);
-      if (isCrazy == true) {
-        ctx.fillStyle = '#ffffff';
-      }
+      // if (isCrazy == true) {
+      //   ctx.fillStyle = '#ffffff';
+      // }
       ctx.fillText(num.toString(), 0, 0);
       //    ctx.fillText("A", 0, 0);
       ctx.rotate(ang);
@@ -548,9 +553,9 @@ function changeCircularProgress(value) {
     // ctx.fill();
     ctx.lineWidth = 20;
      ctx.strokeStyle = "#0000ff";
-    if (isCrazy == true) {
-      ctx.strokeStyle = "#ffffff";
-    }
+    // if (isCrazy == true) {
+    //   ctx.strokeStyle = "#ffffff";
+    // }
     ctx.stroke();
 
 

@@ -29,6 +29,11 @@ background:#EAC032;
 transition:all 0.2s cubic-bezier(.38,.14,.27,.97);
 }
 
+
+.isCrazy .tmr-poster {
+background:#D90000;
+}
+
 .tmr-poster.an-first {
 transition:all 0.4s linear;
     
@@ -54,9 +59,10 @@ line-height:36px;
 text-align:right;
 font-family:'simpler',Arial;
 color:#000;
-margin:10px 0 10px 0;
+margin:0px 0 10px 0;
 transition:all 0.2s linear;
-
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 
