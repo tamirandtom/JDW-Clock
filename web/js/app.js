@@ -152,7 +152,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
   deadline.setHours(24, 18, 0, 0);
 
   $scope.inputKeyPress = function (keyEvent) {
-    if (keyEvent.which === 13) {
+    if (keyEvent.which === 13 && $scope.addedValue != '') {
       if ($scope.addedValue == 'clockstart') {
         firebase.database().ref('clockstart/start').set(1);
       } else if ($scope.addedValue == 'clockcrazy') {
