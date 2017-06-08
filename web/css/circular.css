@@ -5,7 +5,7 @@
   height: 120px;
   /*background-color: #d6dadc;*/
   border-radius: 50%;
-  transform:scale(2.78);
+  transform:scale(2.78) scaleX(-1);
   opacity:0.2;
 }
 .radial-progress .circle .mask,

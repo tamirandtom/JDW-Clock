@@ -5,3 +5,12 @@
        url('fonts/Simpler_web-simpler-700.woff') format('woff'), /* Pretty Modern Browsers */
        url('fonts/Simpler_web-simpler-700.ttf')  format('truetype'); /* Safari, Android, iOS */
 }
+
+
+@font-face {
+  font-family: 'frank';
+  src: url('fonts/Simpler_web-simpler-700.eot'); /* IE9 Compat Modes */
+  src: url('fonts/Simpler_web-simpler-700.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fonts/Simpler_web-simpler-700.woff') format('woff'), /* Pretty Modern Browsers */
+       url('fonts/Simpler_web-simpler-700.ttf')  format('truetype'); /* Safari, Android, iOS */
+}

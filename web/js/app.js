@@ -174,7 +174,7 @@ App.controller('index', ['$scope', '$http', '$interval', function ($scope, $http
     let currTimeProg = totalSecondsCountdown/14400;
     // console.log(currTimeProg*100)
     if ((currTimeProg*100)%1 == 0) {
-   changeCircularProgress(100 - Math.floor(currTimeProg*100));    
+   changeCircularProgress(Math.floor(currTimeProg*100));    
     } 
 
 

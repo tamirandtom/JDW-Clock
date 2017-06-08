@@ -32,6 +32,7 @@ transition:all 0.2s cubic-bezier(.38,.14,.27,.97);
 
 .isCrazy .tmr-poster {
 background:#D90000;
+font-family:'Arial' !important;
 }
 
 .tmr-poster.an-first {
